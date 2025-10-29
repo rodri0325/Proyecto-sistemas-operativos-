@@ -60,9 +60,6 @@ g++ -std=c++17 -static -o os_simulator.exe main.cpp modules/cpu/pcb.cpp modules/
 - Problema Productor-Consumidor
 
 ##  Autor
+Dorian alejandro Gisao
+David Rodriguez espinosa
 
-[Tu Nombre]
-
-##  Licencia
-
-Proyecto académico - Universidad [Nombre]
