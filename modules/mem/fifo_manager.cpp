@@ -12,7 +12,7 @@ void FIFOManager::access_page(int page) {
         // HIT
         std::cout << "Acceso a pagina " << page << " -> HIT" << std::endl;
     } else {
-        // MISS
+        // MISS (fallo de página)
         page_faults++;
         std::cout << "Acceso a pagina " << page << " -> MISS" << std::endl;
         
@@ -29,6 +29,9 @@ void FIFOManager::access_page(int page) {
         pages_in_memory.insert(page);
     }
     
+    // Registrar número acumulado de fallos hasta este acceso
+    faultHistory.push_back(page_faults);
+
     // Mostrar marcos actuales
     std::cout << "Marcos FIFO: [ ";
     std::queue<int> temp = frame_queue;
@@ -41,6 +44,7 @@ void FIFOManager::access_page(int page) {
 
 void FIFOManager::show_stats() const {
     std::cout << "\n--- Estadisticas FIFO ---" << std::endl;
+    std::cout << "Tamaño de marcos: " << max_frames << std::endl;
     std::cout << "Accesos totales: " << total_accesses << std::endl;
     std::cout << "Fallos de pagina: " << page_faults << std::endl;
     std::cout << "Aciertos: " << (total_accesses - page_faults) << std::endl;
@@ -62,7 +66,29 @@ void FIFOManager::show_stats() const {
 void FIFOManager::reset() {
     while (!frame_queue.empty()) frame_queue.pop();
     pages_in_memory.clear();
+    faultHistory.clear();
     page_faults = 0;
     total_accesses = 0;
     std::cout << "Memoria FIFO reiniciada." << std::endl;
+}
+
+// Obtener el total de fallos de página
+int FIFOManager::getPageFaults() const {
+    return page_faults;
+}
+
+// Obtener el historial de fallos acumulados
+const std::vector<int>& FIFOManager::getFaultHistory() const {
+    return faultHistory;
+}
+
+// Guarda las estadísticas actuales (para graficar luego)
+void FIFOManager::save_stats() {
+    FifoStats s{max_frames, page_faults, total_accesses};
+    stats_history.push_back(s);
+}
+
+// Permite recuperar las estadísticas acumuladas
+const std::vector<FifoStats>& FIFOManager::get_stats() const {
+    return stats_history;
 }
